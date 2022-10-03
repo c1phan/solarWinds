@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            #button{
+                visibility:visible;
+                width:20%;
+                height:5%;
+                background-color:lightblue;
+                position:absolute;
+                left:40%;
+                top:60%;
+            }
+            #lifeCounter{
+                width:25%;
+                height:10%;
+                background-color:green;
+                position:absolute;
+                left:-26%;
+            }
+            #timerCounter{
+                width:25%;
+                height:10%;
+                background-color:green;
+                position:absolute;
+                left:-26%;
+                top:12%;
+            }
+            #youIsWinner{
+                width:30%;
+                height:20%;
+                background-color:green;
+                position:absolute;
+                left:35%;
+                top:25%;
+                visibility:hidden;
+            }
+            #followbox{
+                position:absolute;
+                top:90%;
+                left:45%;
+            }
+            #topCover{
+                position:absolute;
+                width:100%;
+                height:10%;
+                background-color:blue;
+                z-index:2;
+            }
+            #bottomCover{
+                position:absolute;
+                width:100%;
+                height:10%;
+                top:700px;
+                background-color:blue;
+                z-index:2;
+            }
+        </style>
+        <script>
+            window.onload = function(){
+                wrapperBackground = document.getElementById("wrapperBackground")
+                    wrapperBackground.style.position = "absolute"
+                    wrapperBackground.style.height = "600px"
+                    wrapperBackground.style.width = "400px"
+                    wrapperBackground.style.backgroundColor = "black"
+                    wrapperBackground.style.left = "590px"
+                    wrapperBackground.style.top = "90px"
+                    
+                
+                followBox = document.getElementById("followBox")
+                    followBox.style.position = "absolute"
+                    followBox.style.left = "0px"
+                    followBox.style.top = "0px"
+                    followBox.style.width = "40px"
+                    followBox.style.height = "40px"
+                    followBox.style.backgroundColor = "blue"
+                    
+                asteroid1 = document.getElementById("asteroid1")
+                    asteroid1.style.position = "absolute"
+                    asteroid1.style.left = "30px"
+                    asteroid1.style.top = "-60px"
+                    asteroid1.style.width = "10px"
+                    asteroid1.style.height = "10px"
+                    asteroid1.style.backgroundColor = "brown"
+
+                asteroid2 = document.getElementById("asteroid2")
+                    asteroid2.style.position = "absolute"
+                    asteroid2.style.left = "90px"
+                    asteroid2.style.top = "-60px"
+                    asteroid2.style.width = "10px"
+                    asteroid2.style.height = "10px"
+                    asteroid2.style.backgroundColor = "brown" 
+
+                asteroid3 = document.getElementById("asteroid3")
+                    asteroid3.style.position = "absolute"
+                    asteroid3.style.left = "150px"
+                    asteroid3.style.top = "-60px"
+                    asteroid3.style.width = "10px"
+                    asteroid3.style.height = "10px"
+                    asteroid3.style.backgroundColor = "brown" 
+                
+                asteroid4 = document.getElementById("asteroid4")
+                    asteroid4.style.position = "absolute"
+                    asteroid4.style.left = "210px"
+                    asteroid4.style.top = "-60px"
+                    asteroid4.style.width = "10px"
+                    asteroid4.style.height = "10px"
+                    asteroid4.style.backgroundColor = "brown" 
+                    
+                asteroid5 = document.getElementById("asteroid5")
+                    asteroid5.style.position = "absolute"
+                    asteroid5.style.left = "270px"
+                    asteroid5.style.top = "-60px"
+                    asteroid5.style.width = "10px"
+                    asteroid5.style.height = "10px"
+                    asteroid5.style.backgroundColor = "brown" 
+                
+                asteroid6 = document.getElementById("asteroid6")
+                    asteroid6.style.position = "absolute"
+                    asteroid6.style.left = "330px"
+                    asteroid6.style.top = "-60px"
+                    asteroid6.style.width = "10px"
+                    asteroid6.style.height = "10px"
+                    asteroid6.style.backgroundColor = "brown"
+                    
+                var diff = null;
+                var currentCounter = null;
+                var setTime = null;
+                var usedAsteroids = null;
+                var gameEnded = null;
+                var a1 = null;
+                var a2 = null;
+                var a3 = null;
+                var a4 = null;
+                var a5 = null;
+                var a6 = null;
+                var si = null;
+                var sa = null;
+                var minsLeft = null;
+                var secsLeft = null;
+                var lifeCounter = null;
+                var lives = null;
+                var insertAHere = null;
+                var unusedAsteroids = null;
+                var wrapperBackground = document.getElementById("wrapperBackground")
+                var followBox = document.getElementById("followBox") 
+            }
+
+            //if asteroid passes x, spawn new asteroid, kill old asteroid
+                
+                
+            function startGame(){
+                lifeCounter = document.getElementById("lifeCounter")
+                a1 = document.getElementById("asteroid1");
+                a2 = document.getElementById("asteroid2");
+                a3 = document.getElementById("asteroid3");
+                a4 = document.getElementById("asteroid4");
+                a5 = document.getElementById("asteroid5");
+                a6 = document.getElementById("asteroid6");
+                lives = 20;
+                lifeCounter.innerHTML = ""+lives+"HP left"
+                unusedAsteroids = [a1,a2,a3,a4,a5,a6];
+                asteroidCounter = 0;
+                usedAsteroids = [];
+                gameEnded = false;
+                diff = 0;
+                minsLeft = 1;
+                secsLeft = 59;
+                secondManCountsTheSecondsEnthusiastically = setInterval(function(){timerMenner()},1000)
+                document.getElementById("button").style.visibility = "hidden";
+                setTime = setInterval(function(){
+                    asteroidMonitor(unusedAsteroids[0])
+                },1000-(diff*100))
+                moveTime = setInterval(function(){
+                    asteroidMovementer()
+                },100-(diff*10))
+            }
+            function endGame(){
+                if(lives <= 0){
+                    lifeCounter.innerHTML = "0 HP left"
+                    clearInterval(setTime)
+                    clearInterval(moveTime)
+                    gameEnded = true;
+                }else{
+                    null
+                }
+            }
+            function gameTimer(){
+                clearInterval(setTime)
+                setTime = setInterval(function(){
+                    asteroidMonitor(unusedAsteroids[0])
+                },1000-(diff*100))
+                clearInterval(moveTime)
+                moveTime = setInterval(function(){
+                    asteroidMovementer()
+                },100-(diff*10))
+                diffTimer()
+            }       
+            function timerMenner(){
+                if(secsLeft != 0){
+                    if(minsLeft != 0){
+                        if(secsLeft <= 0){
+                            secsLeft = 59
+                            minsLeft--
+                        }else{
+                            secsLeft--
+                        }
+                    }
+                }else{
+                    clearInterval(setTime)
+                    clearInterval(moveTime)
+                    document.getElementById("youIsWinner").style.visibility = "visible";
+                }
+                if(secsLeft < 10){
+                    document.getElementById("timerCounter").innerHTML = ""+minsLeft+":0"+secsLeft+""
+                }else{
+                    document.getElementById("timerCounter").innerHTML = ""+minsLeft+":"+secsLeft+""  
+                }
+            }     
+            function asteroidMonitor(currentAsteroid){
+                
+                if(usedAsteroids.length <= 5){
+                    usedAsteroids.push(currentAsteroid)
+                    unusedAsteroids.shift()
+                    si = parseInt(Math.random()*4)+2;
+                    sa = parseInt(Math.random()*3)-1;
+                    currentAsteroid.style.height = (parseInt(''+currentAsteroid.style.height+'')*si)+"px"
+                    currentAsteroid.style.width = (parseInt(''+currentAsteroid.style.width+'')*si)+"px"
+                }
+            }
+            function asteroidMovementer(){
+                for(var i=0; usedAsteroids.length > i; i++){
+                asteroidMover(usedAsteroids[i])
+                }
+            }
+            function asteroidMover(currentAsteroid){
+                var sp = parseInt(Math.random()*30)+1;
+                var an = parseInt(Math.random()*16)-8;
+                currentAsteroid.style.left = (parseInt(''+currentAsteroid.style.left+'')+an)+"px"
+                currentAsteroid.style.top = (parseInt(''+currentAsteroid.style.top+'')+sp)+"px"
+                if(parseInt(''+currentAsteroid.style.top+'') >= 640){
+                    currentCounter = parseInt(Math.random()*5)
+                    currentAsteroid.style.position = "absolute"
+                    
+                    currentAsteroid.style.left = ""+(currentCounter*60)+"px"
+                    currentAsteroid.style.top = "-60px"
+                    currentAsteroid.style.width = "10px"
+                    currentAsteroid.style.height = "10px"
+                    currentAsteroid.style.backgroundColor = "brown"
+
+                    unusedAsteroids.push(currentAsteroid)
+                    usedAsteroids.shift() 
+                    
+
+                }
+                asteroidDamage(currentAsteroid)
+            }
+            function asteroidDamage(currentAsteroid){
+                var mLeft = parseInt(followBox.style.left);
+                var mTop = parseInt(followBox.style.top);
+                var mRight = parseInt(followBox.style.width)+mLeft;
+                var mBottom = parseInt(followBox.style.height)+mTop;
+ 
+                var fLeft = parseInt(currentAsteroid.style.left);
+                var fTop = parseInt(currentAsteroid.style.top);
+                var fRight = parseInt(currentAsteroid.style.width)+fLeft;
+                var fBottom = parseInt(currentAsteroid.style.height)+fTop;
+ 
+                var bbottom = parseInt(wrapperBackground.style.height);
+                var btop = parseInt(wrapperBackground.style.height)-bbottom;
+                var bright = parseInt(wrapperBackground.style.width);
+                var bleft = parseInt(wrapperBackground.style.width)-bright;
+
+                if(mTop < fBottom && mBottom > fTop && mRight > fLeft && mLeft < fRight){
+                    lives--        
+                    lifeCounter.innerHTML = ""+lives+"HP left"
+                    endGame()
+                }
+            }
+            function mouseMovement(e){
+                if(gameEnded === false){
+                    var xCoord= e.clientX-parseInt(wrapperBackground.style.left)
+                    var yCoord= e.clientY-parseInt(wrapperBackground.style.top)
+                    if(xCoord-parseInt(followBox.style.width)/2 > 0 && 
+                        xCoord+parseInt(followBox.style.width)/2 < parseInt(wrapperBackground.style.width) && 
+                        yCoord-parseInt(followBox.style.height)/2 > 0 && 
+                        yCoord+parseInt(followBox.style.height)/2 < parseInt(wrapperBackground.style.height)){
+                            
+                        followBox.style.left = ""+(xCoord-(parseInt(followBox.style.width))/2)+"px"
+                        followBox.style.top = ""+(yCoord-(parseInt(followBox.style.height))/2)+"px"
+                    }
+                }else{
+                    null
+                }
+            }
+
+        </script>
+    </head>
+    
+
+    <body>
+        <div id = "topCover"></div>
+        <div id = "wrapperBackground" onmousemove = mouseMovement(event)>
+            
+            <div id = "followBox"></div>
+            <div id = "button" onclick = startGame()>Start Game</div>
+            <div id = "asteroid1"></div>
+            <div id = "asteroid2"></div>
+            <div id = "asteroid3"></div>
+            <div id = "asteroid4"></div>
+            <div id = "asteroid5"></div>
+            <div id = "asteroid6"></div>
+            <div id = "lifeCounter"></div>
+            <div id = "youIsWinner"></div>
+            <div id = "timerCounter"></div>
+
+        </div>
+        <div id = "bottomCover"></div>
+        <div id = "wall1"></div>
+        <div id = "wall2"></div>
+        <div id = "wall3"></div>
+        <div id = "backBack"></div>
+        <div ></div>
+    </body>
+</html>
